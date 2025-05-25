@@ -19,8 +19,8 @@ function Login () {
 
 const onSubmit = async (data) => {
   try {
-    if (data.password === '0000') {
-      localStorage.setItem('token', 'test-token')
+    if (data.password === '1111') {
+      sessionStorage.setItem('token', 'test-token')
       alert('Login successful!')
       navigate('/home')
     } else {

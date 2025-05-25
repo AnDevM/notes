@@ -2,22 +2,15 @@ import { useSelector } from 'react-redux'
 import BtCreateNew from '../../components/BtCreateNew'
 import Notes from '../notes/Notes'
 import { Link } from 'react-router-dom'
-import { FiSearch } from 'react-icons/fi'
-import { useState } from 'react'
+import { useMemo } from 'react'
 
-function Search () {
-  const notes = useSelector(state => state.notes.notes)
-  const [query, setQuery] = useState('')
+function ArchivedNotes () {
+  const allNotes = useSelector(state => state.notes.notes)
 
-  const filteredNotes = notes.filter(note => {
-    const lowerQuery = query.toLowerCase()
-    return (
-      note.title.toLowerCase().includes(lowerQuery) ||
-      note.content.toLowerCase().includes(lowerQuery) ||
-      note.tags.some(tag => tag.toLowerCase().includes(lowerQuery))
-    )
-  })
-
+  const notes = useMemo(
+    () => allNotes.filter(note => note.isArchived),
+    [allNotes]
+  )
   const dateFormatter = new Intl.DateTimeFormat('en-GB', {
     day: '2-digit',
     month: 'short',
@@ -27,30 +20,18 @@ function Search () {
   return (
     <Notes>
       <div className='flex-1 flex flex-col px-4 pt-5 overflow-hidden relative'>
-        <div className='mb-4 space-y-4'>
-          <h1 className='font-bold text-2xl'>Search</h1>
-          <div className='flex items-center bg-gray-50 border border-gray-300 text-gray-900 rounded-lg px-4 py-2 w-full'>
-            <FiSearch size={'1.5rem'} className='text-gray-400 mr-2' />
-            <input
-              type='text'
-              placeholder='Search by title, content, or tags...'
-              className='bg-transparent outline-none w-full placeholder-gray-400 py-2'
-              onChange={e => setQuery(e.target.value)}
-              value={query}
-            />
-          </div>
-          {query && (
-            <p>
-              All notes matching "{query}"
-              are displayed below.
-            </p>
-          )}
+        <div className='mb-3 space-y-3'>
+          <h1 className='font-bold text-2xl'>Archived Notes</h1>
+          <p>
+            All your archived notes are stored here. You can restore or delete
+            them anytime.
+          </p>
         </div>
         <div className='flex-1 overflow-y-auto pr-1 scroll-hidden'>
-          {filteredNotes.length === 0 ? (
+          {notes.length === 0 ? (
             <p className='bg-start-bg rounded-md p-2 border border-gray-200'>
               No notes have been archived yet. Move notes here for safekeeping,
-              or{' '}
+              or {' '}
               <Link
                 to='/new-note'
                 className='inline-block underline underline-offset-2 hover:scale-105 transform transition-transform duration-300'
@@ -60,7 +41,7 @@ function Search () {
             </p>
           ) : (
             <ul>
-              {filteredNotes.map(note => {
+              {notes.map(note => {
                 const formattedDate = dateFormatter.format(
                   new Date(note.lastEdited)
                 )
@@ -99,4 +80,4 @@ function Search () {
   )
 }
 
-export default Search
+export default ArchivedNotes

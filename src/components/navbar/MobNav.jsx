@@ -5,7 +5,7 @@ const MobNav = () => {
   const navItems = [
     { to: '/home', label: 'Home', icon: <FaHome /> },
     { to: '/search', label: 'Search', icon: <FaSearch /> },
-    { to: '/archived', label: 'Archived', icon: <FaArchive /> },
+    { to: '/archived-notes', label: 'Archived', icon: <FaArchive /> },
     { to: '/tags', label: 'Tags', icon: <FaTags /> },
     { to: '/settings', label: 'Settings', icon: <FaCog /> }
   ]
