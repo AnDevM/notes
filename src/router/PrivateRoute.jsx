@@ -1,13 +1,29 @@
-import { Navigate } from 'react-router-dom'
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const PrivateRoute = ({ children }) => {
-    const token = sessionStorage.getItem('token')
+  const [valid, setValid] = useState(null);
 
-  if (!token) {
-    return <Navigate to='/login' replace />
-  }
+  useEffect(() => {
+    async function verify() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/api/check-token`, {
+          credentials: "include",
+        });
+        const data = await res.json();
+        setValid(data.valid);
+      } catch {
+        setValid(false);
+      }
+    }
 
-  return children
-}
+    verify();
+  }, []);
 
-export default PrivateRoute
+  if (valid === null) return <div>Loading...</div>;
+  if (!valid) return <Navigate to="/login" replace />;
+  return children;
+};
+
+export default PrivateRoute;
